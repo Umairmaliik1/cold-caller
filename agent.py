@@ -182,7 +182,7 @@ async def entrypoint(ctx: JobContext):
     # dial_info is a dict with the following keys:
     # - phone_number: the phone number to dial
     # - name: Name of the user.
-    dial_info = load_contacts("cold-caller\contacts.csv")
+    dial_info = load_contacts("cold-caller/contacts.csv")
     participant_identity = phone_number = dial_info["phone_number"]
 
     # look up the user's phone number and name
@@ -224,6 +224,7 @@ async def entrypoint(ctx: JobContext):
                 participant_identity=participant_identity,
                 # function blocks until user answers the call, or if the call fails
                 wait_until_answered=True,
+                play_dialtone=True,
             )
         )
 
