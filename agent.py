@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import os,json
 import asyncio,csv
 import logging
 from dotenv import load_dotenv
-import os
 from typing import Any
 
 from livekit import rtc, api
@@ -182,13 +182,13 @@ async def entrypoint(ctx: JobContext):
     # dial_info is a dict with the following keys:
     # - phone_number: the phone number to dial
     # - name: Name of the user.
-    dial_info = load_contacts("cold-caller/contacts.csv")
+    dial_info =ctx.job.metadata
     participant_identity = phone_number = dial_info["phone_number"]
 
     # look up the user's phone number and name
     agent = OutboundCaller(
         name=dial_info["name"],
-        dial_info=dial_info,
+        dial_info=json.loads(ctx.job.metadata),
     )
 
     # the following uses Gemini, Deepgram and Cartesia
@@ -209,7 +209,7 @@ async def entrypoint(ctx: JobContext):
             room=ctx.room,
             room_input_options=RoomInputOptions(
                 # enable Krisp background voice and noise removal
-                noise_cancellation=noise_cancellation.BVCTelephony(),
+            noise_cancellation=noise_cancellation.BVCTelephony(),
             ),
         )
     )
